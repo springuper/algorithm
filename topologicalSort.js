@@ -1,20 +1,20 @@
 /*jshint node:true, white:true*/
-var assert = require('assert');
+var assert = require('assert'),
+    _ = require('./lib/underscore');
 
 /**
  * 拓扑排序
  * @method topologicalSort
- * @param {Array} vertexes
  * @param {Object} edges
  * @return {Array}
  */
-function topologicalSort(vertexes, edges) {
-    var l = [],
-        s = findNoInVertexes(vertexes, edges),
-        n,
-        edgesFromN,
-        i;
+function topologicalSort(edges) {
+    var vertexes,
+        l = [], s,
+        n, edgesFromN, i;
 
+    vertexes = _.keys(edges);
+    s = findNoInVertexes(vertexes, edges);
     while (s.length) {
         n = s.shift();
         l.push(n);
@@ -31,7 +31,7 @@ function topologicalSort(vertexes, edges) {
         }
     }
 
-    if (!isEmpty(edges)) {
+    if (!_.isEmpty(edges)) {
         throw new Error('亲，存在循环依赖');
     }
 
@@ -78,26 +78,18 @@ function isVertexNoIn(vertex, edges) {
     return true;
 }
 
-/**
- * 对象是否为空
- * @method isEmpty
- * @param {Object} o
- * @return {Boolean}
- */
-function isEmpty(o) {
-    var p;
-
-    for (p in o) {
-        if (o.hasOwnProperty(p)) return false;
-    }
-
-    return true;
-};
-
-var vs = ['A', 'B', 'C', 'D', 'E'];
 var es = {
     'A': ['C'],
     'B': ['C'],
-    'C': ['D', 'E']
+    'C': ['D', 'E'],
+    'D': [],
+    'E': []
 };
-assert.deepEqual(topologicalSort(vs, es), ['A', 'B', 'C', 'D', 'E']);
+var esCycle = {
+    'A': ['B'],
+    'B': ['A']
+};
+assert.deepEqual(topologicalSort(es), ['A', 'B', 'C', 'D', 'E'], 'DAG failed');
+assert.throws(function () {
+    topologicalSort(esCycle);
+}, 'DCG failed');
