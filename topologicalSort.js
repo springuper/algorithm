@@ -5,29 +5,25 @@ var assert = require('assert'),
 /**
  * 拓扑排序
  * @method topologicalSort
- * @param {Object} edges
+ * @param {Array} vertexes
+ * @param {Array} edges
  * @return {Array}
  */
-function topologicalSort(edges) {
-    var vertexes,
-        l = [], s,
-        n, edgesFromN, i;
+function topologicalSort(vertexes, edges) {
+    var l = [], s,
+        n, i, vertex;
 
-    vertexes = _.keys(edges);
     s = findNoInVertexes(vertexes, edges);
     while (s.length) {
         n = s.shift();
         l.push(n);
-        edgesFromN = edges[n];
-        if (edgesFromN) {
-            for (i = 0; i < edgesFromN.length; ++i) {
-                vertex = edgesFromN[i];
-                edgesFromN.splice(i--, 1);
-                if (isVertexNoIn(vertex, edges)) {
-                    s.push(vertex);
-                }
-            };
-            delete edges[n];
+        for (i = 0; i < edges.length; ++i) {
+            if (edges[i][0] !== n) continue;
+            vertex = edges[i][1];
+            edges.splice(i--, 1);
+            if (isVertexNoIn(vertex, edges)) {
+                s.push(vertex);
+            }
         }
     }
 
@@ -39,19 +35,24 @@ function topologicalSort(edges) {
 }
 
 /**
- * 找出没有入边的顶点
+ * 找出没有入边的顶点集合
  * @method findNoInVertexes
  * @param {Array} vertexes
- * @param {Object} edges
+ * @param {Array} edges
  * @return {Array}
  */
 function findNoInVertexes(vertexes, edges) {
-    var ret = [];
+    var ret = [],
+        hash = {};
     
-    vertexes.forEach(function (vertex) {
-        if (isVertexNoIn(vertex, edges)) {
-            ret.push(vertex);
-        }
+    vertexes.forEach(function (v) {
+        hash[v] = 0;
+    });
+    edges.forEach(function (edge) {
+        hash[edge[1]] = 1;
+    });
+    vertexes.forEach(function (v) {
+        if (!hash[v]) ret.push(v);
     });
 
     return ret;
@@ -65,22 +66,41 @@ function findNoInVertexes(vertexes, edges) {
  * @return {Boolean}
  */
 function isVertexNoIn(vertex, edges) {
-    var p;
+    var i, len;
 
-    for (p in edges) {
-        if (edges.hasOwnProperty(p)) {
-            if (edges[p].indexOf(vertex) !== -1) {
-                return false;
-            }
-        }
+    for (i = 0, len = edges.length; i < len; ++i) {
+        if (edges[i][1] === vertex) return false;
     }
 
     return true;
 }
 
+/**
+ * 计算依赖
+ * @method resolveDependency
+ * @param {Object} deps
+ * @return {Array}
+ */
+function resolveDependency(deps) {
+    var vertexes,
+        edges = [],
+        p;
+
+    vertexes = _.keys(deps);
+    for (p in deps) {
+        if (deps.hasOwnProperty(p)) {
+            deps[p].forEach(function (v) {
+                edges.push([p, v]);
+            });
+        }
+    }
+
+    return topologicalSort(vertexes, edges);
+}
+
 var es = {
     'A': ['C'],
-    'B': ['C'],
+    'B': ['C', 'E'],
     'C': ['D', 'E'],
     'D': [],
     'E': []
@@ -89,7 +109,7 @@ var esCycle = {
     'A': ['B'],
     'B': ['A']
 };
-assert.deepEqual(topologicalSort(es), ['A', 'B', 'C', 'D', 'E'], 'DAG failed');
+assert.deepEqual(resolveDependency(es), ['A', 'B', 'C', 'D', 'E'], 'DAG failed');
 assert.throws(function () {
-    topologicalSort(esCycle);
+    resolveDependency(esCycle);
 }, 'DCG failed');
