@@ -1,0 +1,11 @@
+*.[oa]
+*~
+*.pyc
+*.swk
+*.swl
+*.swn
+*.swm
+*.swo
+*.swp
+*.bin
+.DS_Store
