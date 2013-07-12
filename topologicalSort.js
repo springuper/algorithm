@@ -5,6 +5,7 @@ var assert = require('assert'),
 /**
  * 拓扑排序
  * @method topologicalSort
+ * @link http://en.wikipedia.org/wiki/Topological_sorting
  * @param {Array} vertexes
  * @param {Array} edges
  * @return {Array}
