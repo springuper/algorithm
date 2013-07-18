@@ -2,8 +2,6 @@
 var assert = require('assert'),
     _ = require('./lib/underscore');
 
-var pPush = Array.prototype.push;
-
 /**
  * 中序遍历
  * @method inorderTraverse
