@@ -18,7 +18,7 @@ function findLCS(a, b) {
         matrix = [],
         i, j, len;
 
-    // 初始化dynamic programming矩阵
+    // 初始化DP矩阵
     for (i = 0; i <= m; ++i) {
         matrix[i] = new Array(n + 1);
         matrix[i][0] = 0;
