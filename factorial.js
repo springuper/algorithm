@@ -21,20 +21,21 @@ BigNumber.prototype.multiply = function (num) {
     var digits = this.digits,
         nums = this._serialize(num),
         i, j, len = digits.length, lenNums = nums.length,
-        ret, carry,
+        product, carry,
         result = [];
+
     for (i = 0; i < lenNums; ++i) {
         for (j = 0; j < len; ++j) {
-            ret = nums[i] * digits[j] + (result[i + j] || 0);
-            carry = Math.floor(ret / 10);
-            ret = ret % 10;
-            result[i + j] = ret;
+            product = nums[i] * digits[j] + (result[i + j] || 0);
+            carry = Math.floor(product / 10);
+            result[i + j] = product % 10;
             if (carry > 0) {
                 result[i + j + 1] = carry + (result[i + j + 1] || 0);
             }
         }
     }
     this.digits = result;
+
     return this;
 };
 BigNumber.prototype.format = function () {
