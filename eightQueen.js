@@ -21,13 +21,13 @@ function figureQueenPuzzle(n) {
                 // try next
                 pos = [pos[0], pos[1] + 1];
             } else {
-                if (list.length === 0) return null;
                 // backtrace
+                last = null;
                 while (list.length) {
                     last = list.pop();
                     if (last[1] < n - 1) break;
                 }
-                if (list.length === 0 && last[1] === n - 1) return null;
+                if (!last || last[1] === n - 1) return null;
                 pos = [last[0], last[1] + 1];
             }
         }
