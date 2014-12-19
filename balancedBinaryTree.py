@@ -36,7 +36,7 @@ b.left = d
 b.right = e
 c.right = f
 e.right = g
-# assert isBalanced(a) == True
+assert isBalanced(a) == True
 
 h = TreeNode('h')
 i = TreeNode('i')
