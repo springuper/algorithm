@@ -49,7 +49,6 @@ def maximumGap(num):
 
 assert maximumGap([]) == 0
 assert maximumGap([1]) == 0
-print maximumGap([1, 100000])
 assert maximumGap([1, 100000]) == 99999
 assert maximumGap([1, 2, 3, 4, 6, 7, 8]) == 2
 assert maximumGap([5, 4, 1, 2, 8.5, 3]) == 3.5
